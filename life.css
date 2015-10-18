@@ -1,0 +1,12 @@
+td {
+	border: solid black 1px;
+	width: 6px;
+	height: 6px;
+}
+td.on {
+	background-color: black;
+}
+table {
+	border-collapse: collapse;
+	margin-top: 10px;
+}

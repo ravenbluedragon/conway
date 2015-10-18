@@ -99,88 +99,9 @@ func step(w http.ResponseWriter, r *http.Request) {
 	t.Execute(w, board)
 }
 
-const html = `
-<!DOCTYPE html>
-<html>
-<head>
-	<title>Conway's Game of Life</title>
-	<script>
-		window.addEventListener('load', function() {
-			var b = document.getElementById('board');
-			var running;
-			
-			var q = document.getElementById('quit');
-			q.addEventListener('click', function() {
-				replace(b, "/quit");
-				clearInterval(running);
-			});
-			
-			var r = document.getElementById('random');
-			r.addEventListener('click', function() {
-				replace(b, "/random");
-			});
-			
-			var s = document.getElementById('step');
-			s.addEventListener('click', function() {
-				replace(b, "/step");
-			});
-			
-			s = document.getElementById('start');
-			s.addEventListener('click', function() {
-				running = setInterval(function(){
-					replace(b, "/step");
-				}, 200);
-				replace(b, "/step");
-			});
-			
-			s = document.getElementById('stop');
-			s.addEventListener('click', function() {
-				clearInterval(running);
-			});
-		});
-		
-		function replace(node, target) {
-			var xhr = new XMLHttpRequest();
-			xhr.open('GET', encodeURI(target));
-			xhr.onload = function() {
-				if (xhr.status === 200) {
-					node.innerHTML = xhr.responseText;
-				} else {
-					alert('Request failed.  Returned status of ' + xhr.status);
-				}
-			};
-			xhr.send();
-		}
-	</script>
-	<style>
-		td {
-			border: solid black 1px;
-			width: 6px;
-			height: 6px;
-		}
-		td.on {
-			background-color: black;
-		}
-		table {
-			border-collapse: collapse;
-			margin-top
-		}
-	</style>
-	<link href="life.css" rel="stylesheet">
-</head>
-<body>
-
-<h1>Conway's Game of Life</h1>
-<button id="random">Random Seed</button>
-<button id="start">Start</button>
-<button id="step">Step</button>
-<button id="stop">Stop</button>
-<button id="quit">Quit</button>
-<div id="board"/>
-</body>
-</html>
-`
-
 func root(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte(html))
+	if len(r.RequestURI) == 1 {
+		r.RequestURI = "/life.html"
+	}
+	http.ServeFile(w, r, r.RequestURI[1:])
 }
